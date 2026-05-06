@@ -1,0 +1,73 @@
+{
+  "repo": "gosweep",
+  "language": "Go",
+  "category": "Automation",
+  "goal": "Plan concurrent cleanup operations with safety rails and deterministic logs.",
+  "review_model": {
+    "terms": [
+      "dry-run spread",
+      "rename risk",
+      "operator cost",
+      "idempotence"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "dry-run spread",
+      "signal": 44,
+      "slack": 33,
+      "drag": 13,
+      "confidence": 90,
+      "score": 172,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "rename risk",
+      "signal": 48,
+      "slack": 42,
+      "drag": 23,
+      "confidence": 81,
+      "score": 150,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "operator cost",
+      "signal": 82,
+      "slack": 52,
+      "drag": 17,
+      "confidence": 79,
+      "score": 244,
+      "lane": "ship"
+    },
+    {
+      "name": "recovery",
+      "focus": "idempotence",
+      "signal": 58,
+      "slack": 35,
+      "drag": 23,
+      "confidence": 66,
+      "score": 148,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "dry-run spread",
+      "signal": 89,
+      "slack": 20,
+      "drag": 20,
+      "confidence": 75,
+      "score": 213,
+      "lane": "ship"
+    }
+  ]
+}

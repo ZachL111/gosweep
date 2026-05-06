@@ -1,69 +1,40 @@
 # gosweep
 
-`gosweep` is a Go project for Automation. It turns plan concurrent cleanup operations with safety rails and deterministic logs into a small local model with readable fixtures and a direct verification command.
+`gosweep` explores automation with a small Go codebase and local fixtures. The technical goal is to plan concurrent cleanup operations with safety rails and deterministic logs.
 
-## Reading Gosweep
+## Reason For The Project
 
-Start with the README, then open `metadata/project.json` to check the constants behind the examples. After that, `fixtures/cases.csv` shows the compact path and `examples/extended_cases.csv` gives a wider look at the same rule.
+The project exists to keep a narrow engineering decision visible and testable. For this repo, that decision is how dry-run spread and operator cost should influence a review result.
 
-## Design Sketch
+## Gosweep Review Notes
 
-The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Go layout uses small packages and table-oriented tests so the behavior stays easy to follow.
-
-## Purpose
-
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+The first comparison I would make is `operator cost` against `idempotence` because it shows where the rule is most opinionated.
 
 ## What It Does
 
-- Uses fixture data to keep file plans changes visible in code review.
-- Includes extended examples for safety rails, including `surge` and `degraded`.
-- Documents idempotent checks tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
+- `fixtures/domain_review.csv` adds cases for dry-run spread and rename risk.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/gosweep-walkthrough.md` walks through the case spread.
+- The Go code includes a review path for `operator cost` and `idempotence`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Fixture Notes
+## How It Is Put Together
 
-`examples/extended_cases.csv` adds six named cases. I kept the names plain so failures are easy to read in a terminal: baseline, pressure, surge, degraded, recovery, and boundary.
+The fixture data drives the tests. The code stays thin, while `metadata/domain-review.json` and `config/review-profile.json` explain what each case is meant to protect.
 
-## Files Worth Reading
+The Go addition stays small enough to inspect in one sitting.
 
-- `policy`: Go package with the core model
-- `cmd`: small command entry point
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `go.mod`: Go module metadata
-
-## Setup
-
-Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
-
-## Usage
+## Run It
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Check It
 
-## Verification
+The same command runs the local verification path. The highest-scoring domain case is `edge` at 244, which lands in `ship`. The most cautious case is `recovery` at 148, which lands in `ship`.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Boundaries
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Limits
-
-The examples cover useful edges, not every edge. A larger version would add malformed-input tests, richer reports, and deeper domain parsers.
-
-## Next Directions
-
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add one more automation fixture that focuses on a malformed or borderline input.
+No external service is required. A deeper version would add more negative cases and a clearer boundary around invalid input.

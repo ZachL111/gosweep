@@ -59,3 +59,5 @@ foreach ($pathPattern in $knownPaths) {
 }
 
 go test ./...
+
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-gosweep-detail.ps1
